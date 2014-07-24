@@ -1,0 +1,110 @@
+- content_for :title
+  == 'Zoint - 『今日も一日がんばるぞい！』カウンター'
+
+h1
+  | Zoint - 『今日も一日がんばるぞい！』カウンター
+
+.js-wrapper.view-wrapper
+  .view-background
+    a href="http://www.amazon.co.jp/exec/obidos/ASIN/4832244140/" target="_blank" rel="nofollow"
+      img src="http://ecx.images-amazon.com/images/I/51xfDOcXcgL._AA180_.jpg"
+
+  .view
+    .view-inner
+      .zoi-from.js-zoi-from.like-game
+
+  .view
+    .view-inner
+      .zoi-count.js-zoi-count.like-game
+        span.js-zoi-value.zoi-value data-value=total
+        span.js-zoi-unit.zoi-count-unit
+          span.logo-color0 = 'Z'
+          span.logo-color1 = 'o'
+          span.logo-color2 = 'i'
+          span.logo-color3 = '!'
+
+.js-footer.footer
+  .container
+    h2 What's Zoint ?
+    p
+      | Zoint は皆さんの「今日も一日がんばるぞい」なツイートを数えるサービスです。午前0時(JST)にリセットされます。<br>
+    p
+      | クレーム先: <a href="https://twitter.com/ru_shalm">@ru_shalm</a>
+    .tweet-button
+      a href="https://twitter.com/share" class="twitter-share-button" data-url="http://zoint.rutan.info" data-text="今日も一日がんばるぞい！" data-via="zoint_web" data-lang="ja"
+        | ツイート
+      javascript:
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+javascript:
+  var SAFE_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ','];
+  var CLASS_LIST = [
+    'logo-color0',
+    'logo-color1',
+    'logo-color2',
+    'logo-color3',
+    'logo-color4',
+    'logo-color5',
+    'logo-color6',
+    'logo-color7'
+  ];
+
+  var adjustWrapperHeight = function () {
+    $('.js-wrapper').css('padding-bottom', $('.js-footer').height() + 'px');
+  };
+  $(window).bind('resize', adjustWrapperHeight);
+  adjustWrapperHeight();
+
+  var createColorHtml = function (text) {
+    var chars = ('' + text).split('');
+    var result = [];
+    for (var i = 0; i < chars.length; ++i) {
+      result.push('<span class="' + CLASS_LIST[i % CLASS_LIST.length] + '">' + chars[i] + '</span>');
+    }
+    return result.join('');
+  };
+
+  var setZoiValue = function (value) {
+    $('.js-zoi-value').html(createColorHtml(value));
+    var valueLength = ('' + value).length;
+    var units = $('.js-zoi-unit span');
+    for (var i = 0; i < units.length; ++i) {
+      $(units[i]).removeClass().addClass(CLASS_LIST[(i + valueLength) % CLASS_LIST.length]);
+    }
+  };
+  setZoiValue($('.js-zoi-value').data('value'));
+
+  var animationFlag = false;
+  var changeReserve = [];
+  var changeText = function () {
+    if (animationFlag) {
+      return;
+    }
+    animationFlag = true;
+    var data = changeReserve.shift();
+
+    var countElement = $('.js-zoi-count');
+    var valueElement = $('.js-zoi-value');
+    var fromElement = $('.js-zoi-from');
+    fromElement.html(createColorHtml(data.name)).addClass('changing1');
+    countElement.addClass('changing changing1').delay(210).queue(function (next) {
+      setZoiValue(data.count);
+      countElement.removeClass('changing1');
+      fromElement.removeClass('changing1');
+      next();
+    }).delay(300).queue(function (next) {
+      animationFlag = false;
+      countElement.removeClass('changing');
+      if (changeReserve.length > 0) {
+        setTimeout(changeText, 1);
+      }
+      next();
+    });
+  };
+
+  var ws = new WebSocket('ws://' + window.document.location.host);
+  ws.onmessage = function(e) {
+    var data = JSON.parse(e.data);
+    changeReserve.push(data)
+    changeText();
+  };
