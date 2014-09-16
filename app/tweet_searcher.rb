@@ -6,13 +6,8 @@ module Zoint
   class TweetSearcher
     INTERVAL_SEC = 10
 
-    def initialize(consumer_key, consumer_secret, access_token, access_secret, keyword, since_id, callback_method)
-      @client = Twitter::REST::Client.new do |config|
-        config.consumer_key = consumer_key
-        config.consumer_secret = consumer_secret
-        config.access_token = access_token
-        config.access_token_secret = access_secret
-      end
+    def initialize(twitter, keyword, since_id, callback_method)
+      @client = twitter
       @keyword = keyword
       @since_id = since_id.to_i
       @callback_method = callback_method

@@ -12,6 +12,7 @@ require 'json'
 require 'logger'
 
 require File.dirname(__FILE__) + '/app/redis.rb'
+require File.dirname(__FILE__) + '/app/twitter.rb'
 require File.dirname(__FILE__) + '/app/tweet_searcher.rb'
 require File.dirname(__FILE__) + '/app/websocket.rb'
 
