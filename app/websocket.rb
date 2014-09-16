@@ -23,9 +23,10 @@ module Zoint
           redis_today = Redis::Value.new('today')
           redis_since = Redis::Value.new('since')
           redis_since.value = ENV['DEFAULT_SINCE'] unless redis_since.value
+          twitter = Zoint::TwitterManager.connect
 
           Zoint::TweetSearcher.new(
-            Zoint::TwitterManager.connect,
+            twitter,
             KEYWORD,
             redis_since.value,
             -> (tweet) {
@@ -35,7 +36,7 @@ module Zoint
               day = Time.now.day
               unless day == redis_today.value.to_i
                 # 前日の合計数をツイートするぞい！
-                Zoint::TwitterManager.connect.update("昨日も一日 #{redis_total.value} Zoi! http://zoint.rutan.info")
+                twitter.update("昨日も一日 #{redis_total.value} Zoi! http://zoint.rutan.info")
 
                 # リセットする
                 redis_total.value = 0
@@ -47,7 +48,7 @@ module Zoint
 
               # ツイート数が一定を超えたら@zoint_webにツイートさせるぞい！
               if count % 100 == 0
-                Zoint::TwitterManager.connect.update("今日も一日 #{count} Zoi! http://zoint.rutan.info")
+                twitter.update("今日も一日 #{count} Zoi! http://zoint.rutan.info")
               end
 
               # Reidsに配信依頼
