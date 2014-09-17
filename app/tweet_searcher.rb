@@ -22,7 +22,7 @@ module Zoint
         sleep INTERVAL_SEC
       end
     rescue => e
-      puts e
+      puts e.inspect
       sleep 5
       retry
     end
@@ -33,7 +33,11 @@ module Zoint
       @client.search(@keyword, result_type: 'recent', since_id: @since_id).to_a.reverse.each do |tweet|
         # retweetは取り除く
         if tweet.retweeted_status.class == Twitter::NullObject
-          @callback_method.call(tweet)
+          begin
+            @callback_method.call(tweet)
+          rescue => e
+            puts e.inspect
+          end
           @since_id = tweet.id
         end
       end

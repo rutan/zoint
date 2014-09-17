@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'faye/websocket'
+require 'eventmachine'
 require 'thread'
 require 'json'
 
@@ -36,7 +37,20 @@ module Zoint
               day = Time.now.day
               unless day == redis_today.value.to_i
                 # 前日の合計数をツイートするぞい！
-                twitter.update("昨日も一日 #{redis_total.value} Zoi! http://zoint.rutan.info")
+                before_count = redis_total.value
+                EM.defer do
+                  try_count = 0
+                  begin
+                    twitter.update("昨日も一日 #{before_count} Zoi! http://zoint.rutan.info")
+                  rescue => e
+                    puts e.inspect
+                    try_count += 1
+                    if try_count < 3
+                      sleep (try_count * 5)
+                      retry
+                    end
+                  end
+                end
 
                 # リセットする
                 redis_total.value = 0
@@ -45,11 +59,6 @@ module Zoint
 
               # Zoiカウントを増加
               count = redis_total.increment
-
-              # ツイート数が一定を超えたら@zoint_webにツイートさせるぞい！
-              if count % 100 == 0
-                twitter.update("今日も一日 #{count} Zoi! http://zoint.rutan.info")
-              end
 
               # Reidsに配信依頼
               redis.publish(CHANNEL_NAME, {
