@@ -4,7 +4,7 @@ require 'twitter'
 
 module Zoint
   class TweetSearcher
-    INTERVAL_SEC = 10
+    INTERVAL_SEC = 15
 
     def initialize(twitter, keyword, since_id, callback_method)
       @client = twitter
