@@ -42,12 +42,18 @@ module Zoint
                   try_count = 0
                   begin
                     twitter.update("昨日も一日 #{before_count} Zoi! http://zoint.rutan.info")
+                  rescue Twitter::Error::TooManyRequests => e
+                    puts "sleep #{e.rate_limit.reset_in}s <- #{e.inspect} #{e.backtrace}"
+                    sleep e.rate_limit.reset_in
+                    retry
                   rescue => e
-                    puts e.inspect
                     try_count += 1
                     if try_count < 3
+                      puts "sleep #{(try_count * 5)}s <- #{e.inspect}"
                       sleep (try_count * 5)
                       retry
+                    else
+                      puts "ERROR! <- #{e.inspect}"
                     end
                   end
                 end
