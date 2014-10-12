@@ -36,6 +36,7 @@ GEM
     multi_json (1.10.1)
     multipart-post (2.0.0)
     naught (1.0.0)
+    newrelic_rpm (3.9.5.251)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -101,6 +102,7 @@ PLATFORMS
 DEPENDENCIES
   compass
   faye-websocket
+  newrelic_rpm
   redis-objects
   rspec
   sinatra

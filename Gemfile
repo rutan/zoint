@@ -13,6 +13,8 @@ gem 'twitter'
 gem 'slim'
 gem 'compass'
 
+gem 'newrelic_rpm'
+
 group :development, :test do
   gem 'rspec'
 end

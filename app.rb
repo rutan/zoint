@@ -38,6 +38,10 @@ configure do
   set :scss, Compass.sass_engine_options
 end
 
+configure :production do
+  require 'newrelic_rpm'
+end
+
 before do
   # URLは1つでいい
   redirect 'http://zoint.rutan.info' if request.host == 'zoint.herokuapp.com'
