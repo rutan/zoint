@@ -22,11 +22,11 @@ module Zoint
         sleep INTERVAL_SEC
       end
     rescue Twitter::Error::TooManyRequests => e
-      puts e.inspect
-      sleep 60
+      puts "sleep #{e.rate_limit.reset_in}s <- #{e.inspect}"
+      sleep e.rate_limit.reset_in
       retry
     rescue => e
-      puts e.inspect
+      puts "sleep 5s <- #{e.inspect}"
       sleep 5
       retry
     end
