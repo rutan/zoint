@@ -70,34 +70,37 @@ h2 {
     @include box-sizing(border-box);
 }
 
+.background {
+    overflow: hidden;
+    position: absolute;
+    left: -5%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .4;
+
+    a {
+        display: block;
+        width: 50%;
+        height: 100%;
+        @include rotate(-10deg);
+
+        img {
+            -webkit-filter: blur(4px);
+            -moz-filter: blur(4px);
+            -ms-filter: blur(4px);
+            filter: blur(4px);
+            height: 100%;
+        }
+    }
+}
+
 .view-wrapper {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
     @include box-sizing(border-box);
-}
-
-.view-background {
-    position: absolute;
-    left: -5%;
-    top: 0;
-    width: 50%;
-    -webkit-filter: blur(4px);
-    -ms-filter: blur(4px);
-    filter: blur(4px);
-    @include rotate(-10deg);
-    opacity: .4;
-
-    a {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-    img {
-        height: 100%;
-        max-height: 100%;
-    }
 }
 
 .view {

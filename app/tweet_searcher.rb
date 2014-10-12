@@ -21,6 +21,10 @@ module Zoint
         run_search
         sleep INTERVAL_SEC
       end
+    rescue Twitter::Error::TooManyRequests => e
+      puts e.inspect
+      sleep 60
+      retry
     rescue => e
       puts e.inspect
       sleep 5

@@ -4,11 +4,11 @@
 h1
   | Zoint - 『今日も一日がんばるぞい！』カウンター
 
-.js-wrapper.view-wrapper
-  .view-background
-    a href="http://www.amazon.co.jp/exec/obidos/ASIN/4832244140/" target="_blank" rel="nofollow"
-      img src="http://ecx.images-amazon.com/images/I/51xfDOcXcgL._AA180_.jpg"
+.background
+  a href="http://www.amazon.co.jp/exec/obidos/ASIN/4832244140/" target="_blank" rel="nofollow"
+    img src="http://ecx.images-amazon.com/images/I/51xfDOcXcgL._AA180_.jpg"
 
+.js-wrapper.view-wrapper
   .view
     .view-inner
       .zoi-from.js-zoi-from.like-game
@@ -50,7 +50,10 @@ javascript:
   ];
 
   var adjustWrapperHeight = function () {
-    $('.js-wrapper').css('padding-bottom', $('.js-footer').height() + 'px');
+    //$('.js-wrapper').css('padding-bottom', $('.js-footer').height() + 'px');
+    $('.js-wrapper').css({
+      height: ($('body').height() - $('.js-footer').height()) + 'px',
+    });
   };
   $(window).bind('resize', adjustWrapperHeight);
   adjustWrapperHeight();
